@@ -19,7 +19,7 @@
 package.path = package.path .. ';../../../?.lua'
 require('workshop.base')
 
-local FirmataConnector = request('FirmataConnector.Interface')
+local Firmata = request('Firmata.Ambassador.Interface')
 
-FirmataConnector:Connect()
-FirmataConnector:Disconnect()
+Firmata:Connect()
+Firmata:Disconnect()
