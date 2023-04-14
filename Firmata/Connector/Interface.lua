@@ -3,12 +3,12 @@ return
     Connect = request('Connect'),
     Disconnect = request('Disconnect'),
     --
+    IsConnected = false,
+    PortName = nil,
     InputStream = nil,
     OutputStream = nil,
-    PortName = '',
-    OpenPort = request('OpenPort'),
-    CheckItIsFirmata = request('CheckItIsFirmata'),
-    --
-    IsConnected = false,
     OriginalPortParams = '',
+    --
+    OpenPort = request('OpenPort'),
+    ClosePort = request('ClosePort'),
   }
