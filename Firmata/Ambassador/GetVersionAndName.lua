@@ -1,16 +1,16 @@
 local CompileCommand = request('Handy.CompileCommand')
-local IsVersionResponse = request('Handy.IsVersionResponse')
+local IsVersionAndNameResponse = request('Handy.IsVersionAndNameResponse')
 
 return
   function(self)
     local Result
 
-    local Command = CompileCommand({Type = 'Get version'})
+    local Command = CompileCommand({Type = 'Get version and name'})
     self:Send(Command)
 
     local Response = self:Receive()
 
-    if IsVersionResponse(Response) then
+    if IsVersionAndNameResponse(Response) then
       Result = Response
     end
 

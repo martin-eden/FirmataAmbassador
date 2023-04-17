@@ -1,4 +1,6 @@
 --[[
+  Returns a table with list of ports where Firmata is recognized.
+
   OS: GNU/Linux
 
   Iterates over each name from /dev/ttyUSB0 to /dev/ttyUSB7.
@@ -6,18 +8,18 @@
   Firmata firmware for dialogue. If not, continues iteration.
 ]]
 
-local UsbPortsIterator = request('UsbPortsIterator')
+local UsbPortsIterator = request('Handy.UsbPortsIterator')
 
 return
   function(self)
-    local Connector = self.Connector
+    local Result = {}
+
     for PortName in UsbPortsIterator() do
-      Connector:Connect(PortName)
-      if self:CheckItIsFirmata() then
-        print('Looks like Firmata.')
-        break
-      else
-        print('Not like Firmata. Trying next port.')
+      if self:ConnectTo(PortName) then
+        table.insert(Result, PortName)
+        self:Disconnect()
       end
     end
+
+    return Result
   end

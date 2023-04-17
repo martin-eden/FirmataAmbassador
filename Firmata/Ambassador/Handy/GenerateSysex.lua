@@ -1,6 +1,6 @@
 local assert_byte = request('!.number.assert_byte')
 
-local Markers = request('^.Markers')
+local Markers = request('^.^.Markers')
 
 return
   function(...)
@@ -12,15 +12,14 @@ return
       assert_byte(Term)
     end
 
-    local Chars = {}
-    table.insert(Chars, string.char(Markers.SysexStart))
+    local Result = { Command = Markers.SysexStart }
+
+    Result.Data = {}
     for i = 1, NumArgs do
       local Term = select(i, ...)
-      table.insert(Chars, string.char(Term))
+      table.insert(Result.Data, Term)
     end
-    table.insert(Chars, string.char(Markers.SysexEnd))
-
-    local Result = table.concat(Chars)
+    table.insert(Result.Data, Markers.SysexEnd)
 
     return Result
   end
