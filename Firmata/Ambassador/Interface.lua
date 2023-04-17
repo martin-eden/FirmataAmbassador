@@ -1,19 +1,30 @@
 return
   {
-    Connect = request('Connect'),
+    -- High-level methods:
+    GetFirmataUsbPorts = request('GetFirmataUsbPorts'),
+    GetOpenedI2cPorts = request('GetOpenedI2cPorts'),
+
+    -- Connection management:
+    ConnectTo = request('ConnectTo'),
     Disconnect = request('Disconnect'),
+    IsConnected = function(self) return self.Connector.IsConnected end,
+    GetPortName = function(self) return self.Connector.PortName end,
+
+    -- Main functions:
     GetVersion = request('GetVersion'),
-    -- GetVersionAndFirmware = request('GetVersionAndFirmware'),
-    -- ReadFromI2CDevice = request('ReadFromI2CDevice'),
-    -- WriteToI2CDevice = request('WriteToI2CDevice'),
-    --
+    GetVersionAndName = request('GetVersionAndName'),
+    I2cRead = request('I2cRead'),
+    I2cWrite = request('I2cWrite'),
+
+    -- Implementation internals:
     Connector = request('^.Connector.Interface'),
-    CompileCommand = request('^.Compiler.CompileCommand'),
-    Parse = request('^.Parser.ParseStream'),
+    Transmitter = request('^.Transmitter.Interface'),
+    Parser = request('^.Parser.Interface'),
     --
-    Compile = request('Compile'),
     Send = request('Send'),
     Receive = request('Receive'),
-    --
     CheckItIsFirmata = request('CheckItIsFirmata'),
+    InitializeI2c = request('InitializeI2c'),
+    IsI2cInitialized = false,
+    --
   }

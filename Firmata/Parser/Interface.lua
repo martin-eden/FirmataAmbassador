@@ -1,0 +1,4 @@
+return
+  {
+    Parse = request('Parse'),
+  }
