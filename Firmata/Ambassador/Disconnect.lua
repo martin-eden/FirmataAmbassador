@@ -14,8 +14,8 @@ return
       if not Result then
         -- print('? Disconnect error ?')
       else
-        self.Transmitter.GetByte = self.Connector.GetByte
-        self.Transmitter.PutByte = self.Connector.PutByte
+        self.Transmitter.GetByte = nil
+        self.Transmitter.PutByte = nil
 
         -- print('Disconnected.')
       end

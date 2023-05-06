@@ -1,3 +1,4 @@
+local is_byte = request('!.number.is_byte')
 local OrderedPass = request('!.table.ordered_pass')
 
 local Chars =
@@ -81,6 +82,8 @@ local RepresentValue =
       local TermsStr = table.concat(Terms, ' ')
 
       Result = ('[%s]'):format(TermsStr)
+    elseif is_byte(Value) then
+      Result = ('0x%02X'):format(Value)
     else
       Result = tostring(Value)
     end
@@ -95,15 +98,11 @@ return
 
     if is_nil(Message) then
       table.insert(Terms, 'NIL')
-    else
-      table.insert(Terms, Message.Type)
-
+    elseif is_table(Message) then
       for k, v in OrderedPass(Message) do
-        if (k ~= 'Type') then
-          local Term = ('%s: %s'):format(k, RepresentValue(v))
+        local Term = ('%s: %s'):format(k, RepresentValue(v))
 
-          table.insert(Terms, Term)
-        end
+        table.insert(Terms, Term)
       end
     end
 

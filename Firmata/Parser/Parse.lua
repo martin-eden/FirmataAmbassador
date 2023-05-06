@@ -1,40 +1,33 @@
 --[[
-  Firmata message parser.
+  Parses Firmata message.
 
-  Message
-  ~~~~~~~
-    Command - Byte
-    Data - array of Byte
-    IsSysex - Bool
+    Message
+    ~~~~~~~
+      IsSysex - Bool
+      Command - Byte
+      Data - array of Byte
+
+  Result is table with data-dependent structure.
+  If it's unable to parse message, returns nothing.
 ]]
 
-local assert_byte = request('!.number.assert_byte')
-
-local Handlers = request('ByteHandlers.Interface')
-local SysexHandlers = request('ByteHandlers.Sysex.Interface')
+local RepresentMessage =
+  function(Message)
+    return ('(SysEx: %s, Command: 0x%02X)'):format(Message.IsSysex, Message.Command)
+  end
 
 return
   function(self, Message)
-    assert_table(Message)
-    assert_byte(Message.Command)
-    assert_table(Message.Data)
-    assert_boolean(Message.IsSysex)
-
-    local Result
-
-    local Handler
-
-    if Message.IsSysex then
-      Handler = SysexHandlers[Message.Command]
-    else
-      Handler = Handlers[Message.Command]
+    local Handler = self:GetHandler(Message)
+    if not Handler then
+      self:Complain(('No handler for message %s.'):format(RepresentMessage(Message)))
+      return
     end
 
-    if Handler then
-      local HandlerResult = Handler(Message.Data)
-      if is_table(HandlerResult) then
-        Result = HandlerResult
-      end
+    local Result = self:RunHandler(Message, Handler)
+    if not is_table(Result) then
+      self:Complain(('Failed to parse message %s.'):format(RepresentMessage(Message)))
+      return
     end
 
     return Result

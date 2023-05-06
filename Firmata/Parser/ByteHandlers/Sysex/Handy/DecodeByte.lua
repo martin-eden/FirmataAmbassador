@@ -20,8 +20,17 @@ return
     assert_byte(Value1)
     assert_byte(Value2)
 
-    assert(Value1 <= 0x7F)
-    assert(Value2 <= 0x01)
+    if (Value1 > 0x7F) or (Value2 > 0x01) then
+      --[[
+        Can't convert these values to byte.
+
+        As we are typically called with input from communication
+        channel, it means that one byte was lost. We want to give outer
+        code a possibility to handle and recover, so we are not throwing
+        error().
+      ]]
+      return
+    end
 
     local Result = Value1 | (Value2 << 7)
 

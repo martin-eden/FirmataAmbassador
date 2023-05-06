@@ -34,14 +34,13 @@ local StrucJsonStr = FileToString(InputFileName)
 local Struc = ParseJson(StrucJsonStr)
 local RawStruc = CompileToRawStruc(Struc)
 
-RawStruc =
+local Command =
   {
     Data = RawStruc,
     DeviceId = 0x68,
     Offset = 0,
     Type = 'I2C data',
   }
-table.move(RawStruc.Data, 0, #RawStruc.Data, 1)
 
-local RawJsonStr = TableToJson(RawStruc)
+local RawJsonStr = TableToJson(Command)
 StringToFile(OutputFileName, RawJsonStr)

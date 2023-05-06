@@ -14,8 +14,8 @@
 
 --[[
   Status: works
-  Version: 2
-  Last mod.: 2023-05-06
+  Version: 3
+  Last mod.: 2023-05-09
 ]]
 
 package.path = package.path .. ';../../../?.lua'
@@ -35,21 +35,10 @@ local I2cRequest =
     NumBytes = 0x13,
   }
 
-local RepresentI2cChunk =
-  function(Chunk)
-    assert(is_table(Chunk), 'No data.')
-    assert_integer(Chunk.Offset)
-    assert_integer(Chunk.DeviceId)
-    assert_table(Chunk.Data)
-
-    local Result
-
-    Result = TableToJson(Chunk)
-
-    return Result
-  end
-
-Firmata:ConnectTo(PortName)
-local I2cResponse = Firmata:I2cRead(I2cRequest)
-StringToFile(OutputFileName, RepresentI2cChunk(I2cResponse))
-Firmata:Disconnect()
+if Firmata:ConnectTo(PortName) then
+  local I2cResponse = Firmata:I2cRead(I2cRequest)
+  StringToFile(OutputFileName, TableToJson(I2cResponse))
+  Firmata:Disconnect()
+else
+  print(('Invalid port name or no Firmata there. (PortName: "%s").'):format(PortName))
+end

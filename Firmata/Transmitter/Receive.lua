@@ -1,13 +1,13 @@
 --[[
-  Skims input stream for Firmata message.
+  Frame and return next Firmata message.
 
   Returns
 
     Message
     ~~~~~~~
-      Command - Byte
       IsSysex - Bool
-      [ Data - { Byte, ... } ]
+      Command - Byte
+      Data - array of Byte
 
   Message is not parsed, just framed.
 
@@ -69,6 +69,9 @@
 
 local Signatures = request('^.Markers')
 
+local SysexStart = Signatures.SysexStart
+local SysexEnd = Signatures.SysexEnd
+
 -- Hardcoded format knowledge for fixed-length messages.
 local GetNumBytesToRead =
   function(Command)
@@ -85,24 +88,31 @@ local GetNumBytesToRead =
 
 local IsCommandByte =
   function(Byte)
-    return ((Byte >= 0x80) and (Byte <= 0xFF))
+    -- 0xF7 is end of sysex message
+    return
+      (
+        (Byte >= 0x80) and
+        (Byte ~= 0xF7)
+      )
   end
 
 return
   function(self)
+    assert(is_function(self.GetByte), 'No function for GetByte().')
+
+    local GetByte = self.GetByte
+
     local ReadUntil =
       function(Condition, Result)
         while true do
-          local Byte = self.GetByte()
+          local Byte = GetByte()
 
           if is_nil(Byte) then
             -- No more data in stream so far.
             break
           end
 
-          if is_table(Result) then
-            table.insert(Result, Byte)
-          end
+          table.insert(Result, Byte)
 
           if
             (is_function(Condition) and Condition(Byte)) or
@@ -113,31 +123,33 @@ return
         end
       end
 
+    local Result =
+      {
+        Command = nil,
+        IsSysex = nil,
+        Data = {},
+      }
+
     local LastByte
 
     -- Skip data bytes at start.
-    LastByte = ReadUntil(IsCommandByte)
+    LastByte = ReadUntil(IsCommandByte, {})
 
     if is_nil(LastByte) then
       -- No command byte.
       return
     end
 
-    local Result
-
-    if (LastByte == Signatures.SysexStart) then
+    if (LastByte == SysexStart) then
       -- Variable-length are easy.
 
-      Result =
-        {
-          Command = nil,
-          Data = {},
-          IsSysex = true,
-        }
+      Result.IsSysex = true
 
-      LastByte = ReadUntil(Signatures.SysexEnd, Result.Data)
+      LastByte = ReadUntil(SysexEnd, Result.Data)
 
       if is_nil(LastByte) then
+        -- Sysex not ended.
+        self:Complain('Sysex not ended.')
         return
       end
 
@@ -147,30 +159,29 @@ return
       table.remove(Result.Data, 1)
       table.remove(Result.Data)
     else
-      Result =
-        {
-          Command = LastByte,
-          Data = {},
-          IsSysex = false,
-        }
+      Result.Command = LastByte
+      Result.IsSysex = false
 
       local NumBytesToRead = GetNumBytesToRead(Result.Command)
 
       if is_nil(NumBytesToRead) then
         -- Unknown fixed-length command.
-        local ErrorMsg = ('Unknown fixed-length command: [%02X].'):format(Result.Command)
-        error(ErrorMsg)
+        self:Complain(
+          ('Unknown fixed-length command: [%02X].'):format(Result.Command)
+        )
+        return
       end
 
       for i = 1, NumBytesToRead do
-        local Byte = self.GetByte()
+        local Byte = GetByte()
 
         if is_nil(Byte) then
-          -- Unexpected end.
-          local ErrorMsg =
+          -- Not enough data.
+          self:Complain(
             ('Not enough data for command [%02X]. Expected %d bytes, read %d.'):
             format(Result.Command, NumBytesToRead, i)
-          error(ErrorMsg)
+          )
+          return
         end
 
         table.insert(Result.Data, Byte)

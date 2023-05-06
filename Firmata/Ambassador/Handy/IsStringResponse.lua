@@ -1,6 +1,8 @@
-local CheckMessage = request('CheckMessage')
+local CheckMessageType = request('CheckMessageType')
 
 return
   function(Message)
-    return CheckMessage(Message, 'String response')
+    if is_table(Message) then
+      return CheckMessageType(Message, 'String response')
+    end
   end

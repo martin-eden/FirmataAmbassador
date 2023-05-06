@@ -14,11 +14,17 @@ return
   function(self)
     local Result = {}
 
+    local OriginalPortName = self:GetPortName()
+
     for PortName in UsbPortsIterator() do
       if self:ConnectTo(PortName) then
         table.insert(Result, PortName)
         self:Disconnect()
       end
+    end
+
+    if OriginalPortName then
+      self:ConnectTo(OriginalPortName)
     end
 
     return Result

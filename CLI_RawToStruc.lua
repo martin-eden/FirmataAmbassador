@@ -32,7 +32,6 @@ local StringToFile = request('!.string.save_to_file')
 
 local RawJsonStr = FileToString(InputFileName)
 local RawStruc = ParseJson(RawJsonStr)
-table.move(RawStruc.Data, 1, #RawStruc.Data, 0)
 local ParsedStruc = ParseRawStruc(RawStruc.Data)
 local ParsedJsonStr = TableToJson(ParsedStruc)
 StringToFile(OutputFileName, ParsedJsonStr)

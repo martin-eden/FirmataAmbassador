@@ -1,6 +1,8 @@
-local CheckMessage = request('CheckMessage')
+local CheckMessageType = request('CheckMessageType')
 
 return
   function(Message)
-    return CheckMessage(Message, 'Version and name report')
+    if is_table(Message) then
+      return CheckMessageType(Message, 'Version and name report')
+    end
   end
