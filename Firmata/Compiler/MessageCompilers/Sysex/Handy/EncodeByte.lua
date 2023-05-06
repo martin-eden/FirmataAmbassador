@@ -5,7 +5,7 @@ return
     assert_byte(Byte)
 
     local Value1 = Byte & 0x7F
-    local Value2 = (Byte & 0x80) >> 7
+    local Value2 = Byte >> 7
 
     return { Value1, Value2 }
   end

@@ -4,9 +4,11 @@
   Same format as for main interface: table {[<signature-byte>] = <handler>}.
 ]]
 
+local Signatures = request('^.^.^.Markers').Sysex
+
 return
   {
-    [0x79] = request('VersionAndNameReport'),
-    [0x71] = request('StringResponse'),
-    [0x77] = request('I2cResponse'),
+    [Signatures.VersionAndName] = request('VersionAndNameReport'),
+    [Signatures.String] = request('StringResponse'),
+    [Signatures.I2cData] = request('I2cResponse'),
   }

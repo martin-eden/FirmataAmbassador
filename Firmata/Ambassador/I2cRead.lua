@@ -6,8 +6,8 @@
     Request
     ~~~~~~~
       DeviceId - Byte
+      [ Offset - Byte, Default: 0 ]
       NumBytes - Byte
-      Offset - Byte or Null
 
   When we cannot read because of wrong DeviceId or NumBytes/Offset,
   TWO messages are returned from Firmata.
@@ -22,31 +22,19 @@
     discarding them both and return nil as result.
 ]]
 
-local GenerateSysex = request('Handy.GenerateSysex')
+local CompileI2cReadRequest = request('^.Compiler.MessageCompilers.Interface').I2cRead
 local IsStringResponse = request('Handy.IsStringResponse')
-
-local t2s = request('!.table.as_string')
+-- local t2s = request('!.table.as_string')
 
 return
   function(self, Request)
-    assert_table(Request)
-    assert_integer(Request.DeviceId)
-    assert_integer(Request.NumBytes)
-    assert(is_integer(Request.Offset) or is_nil(Request.Offset))
-
     -- print(('Request: %s.'):format(t2s(Request)))
 
-    local DeviceId = Request.DeviceId
-    local NumBytes = Request.NumBytes
-    local Offset = Request.Offset or 0
-
     if not self.IsI2cInitialized then
-      self:InitializeI2c()
+      self:I2cInit()
     end
 
-    local ModeByte = (1 << 3)
-
-    local Command = GenerateSysex(0x76, DeviceId, ModeByte, Offset, 0, NumBytes, 0)
+    local Command = CompileI2cReadRequest(Request)
 
     self:Send(Command)
 

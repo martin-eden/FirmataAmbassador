@@ -6,25 +6,23 @@ local SetPortParams = request('!.mechs.tty.set_port_params')
 
 return
   function(self)
-    assert_string(self.PortName)
-
-    if self.IsConnected then
-      self.GetByte = nil
-      self.PutByte = nil
-
-      self.InputStream:close()
-      self.InputStream = nil
-
-      self.OutputStream:close()
-      self.OutputStream = nil
-
-      SetPortParams(self.PortName, self.OriginalPortParams)
-
-      self.PortName = nil
-      self.OriginalPortParams = nil
-
-      self.IsConnected = false
+    if not self.IsConnected then
+      return
     end
 
-    return not self.IsConnected
+    self.InputStream:close()
+    self.InputStream = nil
+
+    self.OutputStream:close()
+    self.OutputStream = nil
+
+    SetPortParams(self.PortName, self.OriginalPortParams)
+
+    self.PortName = nil
+    self.OriginalPortParams = nil
+
+    self.GetByte = nil
+    self.PutByte = nil
+
+    self.IsConnected = false
   end

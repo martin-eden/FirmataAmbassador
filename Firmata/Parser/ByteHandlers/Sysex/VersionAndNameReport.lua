@@ -1,12 +1,12 @@
 local DecodeString = request('Handy.DecodeString')
 
 return
-  function(Message)
+  function(Command, Data)
     return
       {
         Type = 'Version and name report',
-        Major = Message[1],
-        Minor = Message[2],
-        FirmwareName = DecodeString(Message, 3),
+        Major = Data[1],
+        Minor = Data[2],
+        FirmwareName = DecodeString(Data, 3),
       }
   end

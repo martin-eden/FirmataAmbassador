@@ -13,18 +13,16 @@ local IsVersionAndNameResponse = request('Handy.IsVersionAndNameResponse')
 
 return
   function(self)
-    local Result = false
+    local Result
 
     local Msg1, Msg2
 
     Msg1 = self:Receive()
+    Msg2 = self:Receive()
 
-    if IsVersionResponse(Msg1) then
-      Msg2 = self:Receive()
-      if IsVersionAndNameResponse(Msg2) then
-        Result = true
-      end
-    end
+    Result =
+      IsVersionResponse(Msg1) and
+      IsVersionAndNameResponse(Msg2)
 
     return Result
   end

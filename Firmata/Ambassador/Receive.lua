@@ -1,11 +1,9 @@
-local t2s = request('!.table.as_string')
+-- local t2s = request('!.table.as_string')
 
 return
   function(self)
-    local Result
-
     if not self:IsConnected() then
-      print('Cannot receive, not connected.')
+      self:Complain('Cannot receive, not connected.')
       return
     end
 
@@ -13,22 +11,23 @@ return
     local RawMessage = Transmitter:Receive()
 
     if is_nil(RawMessage) then
-      print('Failed to receive message from Firmata.')
+      self:Complain('Failed to receive message from Firmata.')
       return
     end
 
     -- print(('Raw message: "%s".'):format(t2s(RawMessage)))
 
+    local Result
+
     local Parser = self.Parser
+
     Result = Parser:Parse(RawMessage)
 
     if (is_nil(Result)) then
-      -- print(('Can\'t parse "%s".'):format(t2s(RawMessage)))
-
-      Result = RawMessage
-      Result.Type = 'Unparsed message.'
+      self:Complain('Failed to parse message.')
+      return
     else
-      -- print(('Parsed to: "%s".'):format(t2s(Result)))
+      -- print(('Parsed message: "%s".'):format(t2s(Result)))
     end
 
     return Result

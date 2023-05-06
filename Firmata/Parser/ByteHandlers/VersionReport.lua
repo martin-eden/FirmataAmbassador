@@ -1,9 +1,9 @@
 return
-  function(Message)
+  function(Command, Data)
     return
       {
         Type = 'Version report',
-        Major = Message[1],
-        Minor = Message[2],
+        Major = Data[1],
+        Minor = Data[2],
       }
   end

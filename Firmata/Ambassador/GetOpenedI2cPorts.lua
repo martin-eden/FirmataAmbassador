@@ -15,7 +15,7 @@ return
   function(self)
     if not self:IsConnected() then
       -- Not connected.
-      print('Not connected.')
+      self:Complain('Not connected.')
       return
     end
 
@@ -24,7 +24,7 @@ return
     for DeviceId = 0x00, 0x7F do
       local ScanResult = self:I2cRead({DeviceId = DeviceId, NumBytes = 1})
       if not is_nil(ScanResult) then
-        -- Correct port.
+        -- Live port.
         table.insert(Result, DeviceId)
       end
     end

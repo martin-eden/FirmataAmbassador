@@ -1,11 +1,12 @@
-local CompileCommand = request('Handy.CompileCommand')
+local CompileVersionRequest = request('^.Compiler.MessageCompilers.Interface').Version
 local IsVersionResponse = request('Handy.IsVersionResponse')
 
 return
   function(self)
     local Result
 
-    local Command = CompileCommand({Type = 'Get version'})
+    local Command = CompileVersionRequest()
+
     self:Send(Command)
 
     local Response = self:Receive()

@@ -1,10 +1,10 @@
 local DecodeString = request('Handy.DecodeString')
 
 return
-  function(Message)
+  function(Command, Data)
     return
       {
         Type = 'String response',
-        Data = DecodeString(Message, 1),
+        Data = DecodeString(Data, 1),
       }
   end
