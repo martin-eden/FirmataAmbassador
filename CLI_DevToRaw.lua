@@ -15,13 +15,13 @@
 --[[
   Status: works
   Version: 3
-  Last mod.: 2023-05-09
+  Last mod.: 2023-05-29
 ]]
 
 package.path = package.path .. ';../../../?.lua'
 require('workshop.base')
 
-local Firmata = request('Firmata.Ambassador.Interface')
+local Firmata = request('FirmataAmbassador.Interface')
 local TableToJson = request('!.concepts.json.save')
 local StringToFile = request('!.string.save_to_file')
 
