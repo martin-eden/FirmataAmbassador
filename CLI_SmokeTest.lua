@@ -10,16 +10,17 @@
 
 --[[
   Status: works
-  Version: 3
-  Last mod.: 2023-05-14
+  Version: 4
+  Last mod.: 2023-06-03
 ]]
 
 package.path = package.path .. ';../../../?.lua'
 require('workshop.base')
 
-local Firmata = request('Firmata.Ambassador.Interface')
+local Firmata = request('FirmataAmbassador.Interface')
 
 local GetResponseRepresentation = request('Handy.GetResponseRepresentation')
+local t2s = request('!.table.as_string')
 
 local SleepSec = request('!.system.sleep')
 
@@ -29,9 +30,10 @@ local Represent =
     print(GetResponseRepresentation(Message))
   end
 
-local PortName = '/dev/ttyUSB0'
+local PortName = '/dev/ttyUSB0' -- Arduino Uno
+-- local PortName = '/dev/ttyACM0' -- Arduino Mega
 
--- [[
+--[[
 do
   local FirmataPorts = Firmata:GetFirmataUsbPorts()
   Represent('USB ports with Firmata', FirmataPorts)
@@ -50,6 +52,7 @@ end
 
 -- [[
 do
+  print('Scanning for I2C devices.')
   local I2cDevices = Firmata:GetOpenedI2cPorts()
   Represent('I2C devices', I2cDevices)
 end
@@ -67,22 +70,13 @@ do
   local VersionAndFirmware = Firmata:GetVersionAndName()
   Represent('Version and firmware', VersionAndFirmware)
 end
--- ]]
+--]]
 
 -- [[
 do
   print('Digital reads.')
   for pin = 0, 13 do
     print(('Pin %d: %s.'):format(pin, Firmata:DigitalRead({Pin = pin})))
-  end
-end
---]]
-
--- [[
-do
-  print('Analog reads.')
-  for pin = 0, 5 do
-    print(('A%d: %.2f'):format(pin, Firmata:AnalogRead({Pin = pin}) or -1))
   end
 end
 --]]
@@ -103,7 +97,16 @@ end
 
 -- [[
 do
-  print('Analog (PWM) write.')
+  print('Analog reads.')
+  for pin = 0, 5 do
+    print(('A%d: %.2f'):format(pin, Firmata:AnalogRead({Pin = pin}) or -1))
+  end
+end
+--]]
+
+-- [[
+do
+  print('Analog (PWM) writes.')
 
   local Pin = 3
 
@@ -119,6 +122,15 @@ do
   SleepSec(1.5)
   Firmata:AnalogWrite({Pin = Pin, Value = 0.0})
 end
+--]]
+
+-- [[
+  do
+    print('Getting board configuration.')
+    local BoardConfiguration = Firmata:GetBoardConfiguration()
+    -- Represent('', BoardConfiguration)
+    print(t2s(BoardConfiguration))
+  end
 --]]
 
 print('Disconnected.')
