@@ -1,28 +1,59 @@
-local GetPinModeName = request('GetPinModeName')
+--[[
+  Convert pin modes description from Firmata to more useful format.
+
+  Input
+
+    {
+      { <Pin modes description from Firmata> },
+      ...
+    }
+
+  Output
+
+    {
+      { [ DIO = true, ] [ AI = true, ] [ PWM = true, ] [ I2C = true, ] },
+      ...
+    }
+
+  Output modes
+
+    DIO - (d)igital (i)nput-(o)utput. Includes modes (digital input,
+      digital input-pullup, digital output, servo).
+    AI - (a)nalog (i)input
+    PWM - (p)ulse-(w)idth (m)odulation
+    I2C - ({i})nter-({i})ntegrated (c)ircuit
+
+  Note
+    In Firmata format each pin mode is described by .Mode and .Resolution.
+    For further work .Resolution is not used. So this field is dropped.
+]]
+
+local NamePinModes = request('NamePinModes')
 local CompressNamedPinModeRec = request('CompressNamedPinModeRec')
 
-local DescribePins =
+return
   function(FirmataPinsModes)
     local Result = {}
 
-    for PinNumber, PinRec in ipairs(FirmataPinsModes) do
-      local CurrentPinModes = {}
+    for PinRecIdx, PinRec in ipairs(FirmataPinsModes) do
+      local PinModes
 
-      for _, ModeRec in ipairs(PinRec) do
-        local ModeName = GetPinModeName(ModeRec.Mode)
-        if not is_nil(ModeName) then
-          CurrentPinModes[ModeName] = true
-        end
+      PinModes = NamePinModes(PinRec)
+      if is_nil(PinModes) then
+        Complain(('Failed at naming modes for pin record #%d.'):format(PinRecIdx))
+        return
       end
 
-      CurrentPinModes = CompressNamedPinModeRec(CurrentPinModes)
+      PinModes = CompressNamedPinModeRec(PinModes)
+      if is_nil(PinModes) then
+        Complain(('Failed at shortening pin modes description for pin record #%d.'):format(PinRecIdx))
+        return
+      end
 
-      CurrentPinModes.PinIndex = PinNumber - 1
+      PinModes.PinIndex = PinRecIdx - 1
 
-      table.insert(Result, CurrentPinModes)
+      table.insert(Result, PinModes)
     end
 
     return Result
   end
-
-return DescribePins

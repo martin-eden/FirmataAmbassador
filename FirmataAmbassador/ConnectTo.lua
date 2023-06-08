@@ -10,32 +10,31 @@
 
   Returns
     TRUE - connected, port is opened
-    FALSE - failed to connect, port is closed
+    NIL - failed to connect, port is closed
 ]]
 
 return
   function(self, PortName)
-    -- print(('Connecting to port "%s".'):format(PortName))
-
-    if self:IsConnected() then
-      -- print('Already connected.')
-      self:Disconnect()
-    end
-
     local Connector = self.Connector
 
     Connector:ConnectTo(PortName)
 
+    if not Connector.IsConnected then
+      Complain(('Failed to connect to "%s".'):format(PortName))
+      return
+    end
+
     self.Transmitter.GetByte = Connector.GetByte
     self.Transmitter.PutByte = Connector.PutByte
 
-    -- Connected.
+    local GotGreetings = self:GotInitGreetings()
 
-    Result = self:GotInitGreetings()
-    if not Result then
+    if not GotGreetings then
+      Complain("Didn't get proper greetings from board.");
       self:Reset()
       self:Disconnect()
+      return
     end
 
-    return Result
+    return true
   end
