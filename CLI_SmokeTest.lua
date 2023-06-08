@@ -11,8 +11,11 @@
 --[[
   Status: works
   Version: 4
-  Last mod.: 2023-06-03
+  Last mod.: 2023-06-08
 ]]
+
+-- local PortName = '/dev/ttyUSB0' -- Arduino Uno
+local PortName = '/dev/ttyACM0' -- Arduino Mega
 
 package.path = package.path .. ';../../../?.lua'
 require('workshop.base')
@@ -29,9 +32,6 @@ local Represent =
     print(Header .. ':')
     print(GetResponseRepresentation(Message))
   end
-
-local PortName = '/dev/ttyUSB0' -- Arduino Uno
--- local PortName = '/dev/ttyACM0' -- Arduino Mega
 
 --[[
 do
@@ -128,8 +128,10 @@ end
   do
     print('Getting board configuration.')
     local BoardConfiguration = Firmata:GetBoardConfiguration()
-    -- Represent('', BoardConfiguration)
-    print(t2s(BoardConfiguration))
+    if BoardConfiguration then
+      -- Represent('', BoardConfiguration)
+      print(t2s(BoardConfiguration))
+    end
   end
 --]]
 
