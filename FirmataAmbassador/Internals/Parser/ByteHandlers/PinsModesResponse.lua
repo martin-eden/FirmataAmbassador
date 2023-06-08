@@ -16,9 +16,8 @@
 
     PinModeRec
     ~~~~~~~~~~
-      Mode - Byte
-      Resolution - Byte
-
+      Mode - Byte - Mode number.
+      Resolution - Byte - Number of bits in mode-specific value.
 ]]
 
 return

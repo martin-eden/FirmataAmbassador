@@ -1,4 +1,29 @@
-local CompressNamedPinModeRec =
+--[[
+  Shrinking mapping of common pin modes.
+
+  Convert
+
+    {
+      ...,
+      ['Digital input'] = true, ['Digital input-pullup'] = true,
+      ['Digital output'] = true, ['Servo'] = true,
+      ['Analog input'] = true,
+      PWM = false,
+      ...,
+    }
+
+  to
+
+    {
+      ...,
+      DIO = true,
+      AI = true,
+      -- no records for False values
+      ...,
+    }
+]]
+
+return
   function(NamedPinModeRec)
     assert_table(NamedPinModeRec)
 
@@ -29,5 +54,3 @@ local CompressNamedPinModeRec =
 
     return Result
   end
-
-return CompressNamedPinModeRec

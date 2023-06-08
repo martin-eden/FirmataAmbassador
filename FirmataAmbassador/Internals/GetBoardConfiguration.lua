@@ -1,12 +1,3 @@
---[[
-  Each pin mode is described as record { Mode: byte, Resolution: byte }.
-  Resulution is value resolution in bits. So 10 means value can be
-  from 0 to 1023.
-
-  We are not plan to use pin mode resolution in further work so just
-  discarding it here.
-]]
-
 local DescribePins = request('GetBoardConfiguration.DescribePins')
 
 return
@@ -19,10 +10,12 @@ return
       return
     end
 
+    local PinsDescription = DescribePins(Response.Data)
+
     local Result =
       {
         Type = 'Board configuration',
-        Pins = DescribePins(Response.Data),
+        Pins = PinsDescription,
       }
 
     return Result
