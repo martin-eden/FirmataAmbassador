@@ -1,4 +1,4 @@
 return
   function(self, Request)
-    self:CompileAndSend('SetPinMode')
+    self:CompileAndSend('SetPinMode', Request)
   end
