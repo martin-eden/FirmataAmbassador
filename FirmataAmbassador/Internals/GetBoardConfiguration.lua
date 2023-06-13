@@ -13,8 +13,12 @@
         PinIndex - Byte - zero-based index
         SupportedRoles -
         {
-          ?[<String>] = true
+          ?[<String>] = Bool
           ...
+        }
+        SupportedModes -
+        {
+          ?[<String>] = True
         }
         CurrentModeName - String
         CurrentState - Byte
@@ -34,7 +38,7 @@ return
       }
 
     -- Get number of pins and roles of each pin.
-    local PinsRolesAvailable
+    local AvailablePinsModes
     do
       local Response = self:CompileSendAndReceive('GetPinsModes')
 
@@ -43,11 +47,11 @@ return
         return
       end
 
-      PinsRolesAvailable = DescribePins(Response.Data)
+      AvailablePinsModes = DescribePins(Response.Data)
     end
 
     -- Get current mode for each pin.
-    for PinNumber = 1, #PinsRolesAvailable do
+    for PinNumber = 1, #AvailablePinsModes do
       local PinIndex = PinNumber - 1
 
       local Response = self:CompileSendAndReceive('GetPinState', { Pin = PinIndex })
@@ -71,12 +75,16 @@ return
           PinIndex = PinIndex,
           CurrentModeName = Response.ModeName,
           CurrentState = Response.State,
-          SupportedRoles = PinsRolesAvailable[PinNumber],
+          SupportedRoles = AvailablePinsModes[PinNumber],
         }
 
       -- Modify <Result.Pins>.
       table.insert(Result.Pins, PinDescription)
     end
+
+    -- [!] Setting object field.
+    self.AvailablePinsModes = AvailablePinsModes
+
 
     return Result
   end

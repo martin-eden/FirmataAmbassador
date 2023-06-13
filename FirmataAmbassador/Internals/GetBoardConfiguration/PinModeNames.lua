@@ -1,4 +1,8 @@
-local PinModeNames =
+--[[
+  Mapping of pin modes to mode names.
+]]
+
+return
   {
     [0] = 'Digital input',
     [1] = 'Digital output',
@@ -9,5 +13,3 @@ local PinModeNames =
     [10] = 'Serial',
     [11] = 'Digital input-pullup',
   }
-
-return PinModeNames
