@@ -1,3 +1,16 @@
+--[[
+  Decode to array of bytes.
+
+  Input
+
+    <Message> - array of Byte
+    <StartIdx> - Byte - start position
+
+  Output
+
+    array of Byte
+]]
+
 local DecodeByte = request('DecodeByte')
 
 return
