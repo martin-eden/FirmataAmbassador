@@ -35,6 +35,7 @@ return
     Send = request('Internals.Send'),
     CompileAndSend = request('Internals.CompileAndSend'),
     Receive = request('Internals.Receive'),
+    CompileSendAndReceive = request('Internals.CompileSendAndReceive'),
     GotInitGreetings = request('Internals.GotInitGreetings'),
 
     Reset = request('Internals.Reset'),
