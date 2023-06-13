@@ -29,6 +29,7 @@ return
     [Signatures.String] = request('StringResponse'),
 
     [Signatures.PinsModesRy] = request('PinsModesResponse'),
+    [Signatures.PinStateRy] = request('PinStateResponse'),
 
     [Signatures.I2cData] = request('I2cResponse'),
 

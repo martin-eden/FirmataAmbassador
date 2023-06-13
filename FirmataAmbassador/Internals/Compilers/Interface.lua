@@ -21,6 +21,7 @@ return
     I2cWrite = request('I2cWrite'),
 
     GetPinsModes = request('GetPinsModes'),
+    GetPinState = request('GetPinState'),
     SetPinMode = request('SetPinMode'),
     SetPinValue = request('SetPinValue'),
     SetPinValueLong = request('SetPinValueLong'),
