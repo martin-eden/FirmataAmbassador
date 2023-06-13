@@ -1,12 +1,20 @@
 --[[
   Set digital (boolean) value of pin.
 
-  Effectively writes 0V or 5V to pin.
+  Input
 
-  Request
-  ~~~~~~~
-    Pin - Byte
-    Value - Boolean: FALSE - 0V, TRUE - 5V
+    {
+      Pin - Byte
+      Value - Boolean
+    }
+
+  Output
+
+    none
+
+  Note
+
+    Effectively writes 0V (false) or 5V (true) to pin.
 ]]
 
 local Compilers = request('Internals.Compilers.Interface')

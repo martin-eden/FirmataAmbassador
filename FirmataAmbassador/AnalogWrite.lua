@@ -1,20 +1,29 @@
 --[[
   PWM write to pin.
 
-  Request
-  ~~~~~~~
-    Pin - Byte
-    Value - Float: >= 0.0 and < 1.0
+  Input
 
-  It's not analog write. Arduino Uno can't actually output stable
-  voltage between 0V and 5V to pin (some other boards can).
-  What it can do is to do PWM-output to pin (PWM freq is near 490Hz).
+    {
+      Pin - Byte
+      Value - Float - between [0.0, 1.0)
+    }
+
+  Output
+
+    none
+
+  Note
+
+    It's not analog write. Arduino Uno can't actually output stable
+    voltage between 0V and 5V to pin (some other boards can).
+    What it can do is to do PWM-output to pin (PWM freq is near 490Hz).
 ]]
 
 local assert_byte = request('!.number.assert_byte')
 
 return
   function(self, Request)
+    assert_table(Request)
     assert_byte(Request.Pin)
     assert_float(Request.Value)
     assert(

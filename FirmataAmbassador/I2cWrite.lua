@@ -3,11 +3,15 @@
 
   Input
 
-    Request
-    ~~~~~~~
+    {
       DeviceId - Byte
-      [ Offset - Byte, Default: 0 ]
+      [ Offset - Byte - Default: 0 ]
       Data - array of Byte
+    }
+
+  Output
+
+    none
 ]]
 
 local IsStringResponse = request('Internals.Handy.IsStringResponse')
