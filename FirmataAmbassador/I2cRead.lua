@@ -3,24 +3,25 @@
 
   Input
 
-    Request
-    ~~~~~~~
-      DeviceId - Byte: 7-bit device id
-      [ Offset - Byte: (Default: 0) ]
+    {
+      DeviceId - Byte - 7-bit device id
+      [ Offset - Byte - Default: 0 ]
       NumBytes - Byte
+    }
 
   Output
 
-    Response
-    ~~~~~~~~
+    {
       DeviceId - Byte
       Offset - Byte
       Data - array of Byte
       Type - String: "I2C response"
+    }
 
+  Note
 
-  When we cannot read because of wrong DeviceId or NumBytes/Offset,
-  TWO messages are returned from Firmata.
+    When we cannot read because of wrong DeviceId or NumBytes/Offset,
+    TWO messages are returned from Firmata.
 
     First is string reply with text like "I2C: Too few bytes received".
     Second is I2C reply with data that was actually read.

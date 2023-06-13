@@ -3,10 +3,7 @@
 
   Input
 
-    Request
-    {
-      Pin - Byte
-    }
+    Pin - Byte
 
   Output
 
@@ -14,9 +11,9 @@
       OR
     Nil - in case of errors
 
-  Notes
+  Note
 
-    5V TTL logic resoultion rules are:
+    5V TTL logic resoultion rules:
 
       V: 0.0 0.8 2.0 5.0
          ~~~~~~~ ~~~~~~~
@@ -29,15 +26,14 @@ local assert_byte = request('!.number.assert_byte')
 local GetBit = request('!.number.get_bit')
 
 return
-  function(self, Request)
-    assert_table(Request)
-    assert_byte(Request.Pin)
+  function(self, Pin)
+    assert_byte(Pin)
 
     local PinModeDigitalInput = 0
-    self:CompileAndSend('SetPinMode', { Pin = Request.Pin, Mode = PinModeDigitalInput })
+    self:CompileAndSend('SetPinMode', { Pin = Pin, Mode = PinModeDigitalInput })
 
     -- Map pin number to port number. (0 .. 7) => 0, (8 .. 15) => 1, ...
-    local Port = Request.Pin // 8
+    local Port = Pin // 8
 
     self:CompileAndSend('EnableDigitalPortReporting', { Port = Port })
     local Response = self:CompileSendAndReceive('DisableDigitalPortReporting', { Port = Port })
@@ -61,7 +57,7 @@ return
       return
     end
 
-    local PinBit = Request.Pin % 8
+    local PinBit = Pin % 8
     local Result = GetBit(Response.Value, PinBit)
 
     return Result

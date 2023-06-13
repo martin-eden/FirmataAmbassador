@@ -1,15 +1,15 @@
 --[[
   Get the value from analog pin.
 
-  Request
-  ~~~~~~~
-    Pin - Byte: 0 for A0, 1 for A1, and so on
+  Input
 
-  Returns
+    Pin - Byte - 0 for A0, 1 for A1, and so on
 
-    Float: > 0.0 and < 1.0
-      OR
-    Nil: in case of errors
+  Output
+
+    Float - between (0.0, 1.0)
+    OR
+    Nil - in case of errors
 
 
   Note - getting analog value
@@ -43,14 +43,13 @@
 local assert_byte = request('!.number.assert_byte')
 
 return
-  function(self, Request)
-    assert_table(Request)
-    assert_byte(Request.Pin)
+  function(self, Pin)
+    assert_byte(Pin)
 
     local PinModeAnalogInput = 2
-    self:CompileAndSend('SetPinMode', { Pin = Request.Pin, Mode = PinModeAnalogInput })
-    self:CompileAndSend('EnableAnalogPinReporting', Request)
-    local Response = self:CompileSendAndReceive('DisableAnalogPinReporting', Request)
+    self:CompileAndSend('SetPinMode', { Pin = Pin, Mode = PinModeAnalogInput })
+    self:CompileAndSend('EnableAnalogPinReporting', { Pin = Pin } )
+    local Response = self:CompileSendAndReceive('DisableAnalogPinReporting', { Pin = Pin } )
 
     if not is_table(Response) then
       Complain("AnalogRead(): Didn't get response to analog read request.")
@@ -62,7 +61,7 @@ return
       return
     end
 
-    if (Response.Pin ~= Request.Pin) then
+    if (Response.Pin ~= Pin) then
       Complain(
         ('AnalogRead(): WTF?! Got analog value for another pin (%d)!'):
         format(Response.Pin)
