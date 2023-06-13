@@ -16,6 +16,10 @@ return
 
     PinsModesRq = 0x6B,
     PinsModesRy = 0x6C,
+
+    PinStateRq = 0x6D,
+    PinStateRy = 0x6E,
+
     PinMode = 0xF4,
     PinValue = 0xF5,
     PinLongValue = 0x6F,
