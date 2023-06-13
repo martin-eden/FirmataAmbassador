@@ -4,9 +4,7 @@ return
   function(self)
     local Result
 
-    self:CompileAndSend('Version')
-
-    local Response = self:Receive()
+    local Response = self:CompileSendAndReceive('Version')
 
     if IsVersionResponse(Response) then
       Result = Response

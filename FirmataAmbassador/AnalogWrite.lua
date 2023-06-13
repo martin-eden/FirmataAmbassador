@@ -14,19 +14,19 @@
 local assert_byte = request('!.number.assert_byte')
 
 return
-  function(self, Message)
-    assert_byte(Message.Pin)
-    assert_float(Message.Value)
+  function(self, Request)
+    assert_byte(Request.Pin)
+    assert_float(Request.Value)
     assert(
-      (Message.Value >= 0.0) and (Message.Value < 1.0),
+      (Request.Value >= 0.0) and (Request.Value < 1.0),
       'Value should be between [0.0, 1.0).'
       )
 
     -- Map [0.0, 1.0) to [0, 255].
-    local PinValue = (Message.Value * 256) // 1 | 0
+    local PinValue = (Request.Value * 256) // 1 | 0
 
     local PinModeOutput = 3
 
-    self:CompileAndSend('SetPinMode', { Pin = Message.Pin, Mode = PinModeOutput })
-    self:CompileAndSend('SetPinValueLong', { Pin = Message.Pin, Value = PinValue })
+    self:CompileAndSend('SetPinMode', { Pin = Request.Pin, Mode = PinModeOutput })
+    self:CompileAndSend('SetPinValueLong', { Pin = Request.Pin, Value = PinValue })
   end
