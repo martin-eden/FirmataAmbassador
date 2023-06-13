@@ -1,16 +1,25 @@
 --[[
   Connect to USB port given by name. If there is no Firmata, disconnect.
 
-  There is dreaded case when there IS Firmata and she is sending
-  continious digital/analog/I2C/whatever reports. In my cases she will
-  not react even to Reset command.
+  Input
 
-  If we didn't receive greetings messages after opening port,
-  we will send Reset command (0xFF) and disconnect.
+    PortName - String - port name like '/dev/ttyUSB0'
 
-  Returns
+  Output
+
     TRUE - connected, port is opened
+    OR
     NIL - failed to connect, port is closed
+
+  Note
+
+    There is dreaded case when there IS Firmata and she is sending
+    continuous digital/analog/I2C/whatever reports. In my cases she
+    will not react even to Reset command.
+
+    If we don't receiving greeting messages after opening port,
+    we are sending Reset (0xFF) command and disconnecting.
+    In hopes for good behavior in next session.
 ]]
 
 return
