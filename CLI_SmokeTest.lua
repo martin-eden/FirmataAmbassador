@@ -22,7 +22,6 @@ local PortName = '/dev/ttyUSB0' -- Arduino Uno
 
 local TestsToRun =
   {
-    -- DiscoverUsbPorts = true,
     -- ScanI2c = true,
 
     -- GetVersion = true,
@@ -53,16 +52,6 @@ local Represent =
     print(Header .. ':')
     print(GetResponseRepresentation(Message))
   end
-
-if TestsToRun.DiscoverUsbPorts then
-  local FirmataPorts = Firmata:GetFirmataUsbPorts()
-  Represent('USB ports with Firmata', FirmataPorts)
-
-  if (#FirmataPorts == 0) then
-    print('No ports with Firmata. Quiting.')
-    return
-  end
-end
 
 local RunTests =
   function(TestsToRun)
