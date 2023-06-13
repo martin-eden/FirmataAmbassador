@@ -15,8 +15,15 @@ local Result =
     -- Connection management:
     ConnectTo = request('ConnectTo'),
     Disconnect = request('Disconnect'),
+
+    -- Awareness and exploration:
     IsConnected = function(self) return self.Connector.IsConnected end,
     GetPortName = function(self) return self.Connector.PortName end,
+    GetNumPins = nil,
+    GetAvailablePinRoles = nil,
+    GetAvailablePinModes = nil,
+    GetPinMode = nil,
+    GetPinValue = nil,
 
     -- Main functions:
     DigitalRead = request('DigitalRead'),
