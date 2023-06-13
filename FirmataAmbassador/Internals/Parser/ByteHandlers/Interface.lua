@@ -4,14 +4,19 @@
     Handlers
     ~~~~~~~~
     {
-      [Byte] = <Handler>(<Message>)
+      [<Command>] = <Handler>(<Message>) -> Table
+      ~~~~~~~~~~              ~~~~~~~~~
+         Byte               array of Byte
     }
 
   How to use
 
-    Read one byte ~B~ from you stream.
-    If there is handler at <[<B>]>, call it with message data.
-    Table with parsed message is returned as result.
+    [Transmitter.Receive()] will provide you result in format
+    { Command: Byte, Data: array of Byte }.
+
+    If there is handler at [<Command>], call it with <Data>.
+    Table with parsed message will be returned as result.
+    Else just skip this message as we can't parse it.
 ]]
 
 local Signatures = request('^.^.Markers')

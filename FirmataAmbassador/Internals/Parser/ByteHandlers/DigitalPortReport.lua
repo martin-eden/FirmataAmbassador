@@ -7,7 +7,18 @@ local DecodeByte = request('Handy.DecodeByte')
 
 return
   function(Command, Data)
-    assert((Command >= MinCommandId) and (Command <= MaxCommandId), 'Command out of supported range.')
+    --[[
+      Unlike most other parser methods, we analyze <Command> here as
+      the low nibble encodes port number.
+
+      Same is done in [AnalogPinReport]. There low nibble encodes
+      analog pin index.
+    ]]
+
+    assert(
+      (Command >= MinCommandId) and (Command <= MaxCommandId),
+      'Command out of supported range.'
+    )
 
     -- Map (0x90..0x9F) to (0x00..0x0F).
     local DigitalPortNumber = Command - MinCommandId
