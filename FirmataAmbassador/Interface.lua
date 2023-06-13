@@ -5,9 +5,6 @@ _G.Complain = function(Msg) print(Msg) end
 
 return
   {
-    -- Discover USB ports.
-    GetFirmataUsbPorts = request('GetFirmataUsbPorts'),
-
     -- Connection management:
     ConnectTo = request('ConnectTo'),
     Disconnect = request('Disconnect'),
@@ -45,5 +42,4 @@ return
 
     I2cInit = request('Internals.I2cInit'),
     IsI2cInitialized = false,
-
   }
