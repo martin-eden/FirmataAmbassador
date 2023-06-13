@@ -1,10 +1,17 @@
 --[[
   Convert message to bytes and write to stream.
 
-  Message
-  ~~~~~~~
-    Command - Byte
-    Data - array of Byte
+  Input
+
+    Message
+      {
+        Command - Byte
+        Data - array of Byte
+      }
+
+  Output
+
+    none
 ]]
 
 local Signatures = request('^.Markers')
