@@ -22,8 +22,6 @@ local PortName = '/dev/ttyUSB0' -- Arduino Uno
 
 local TestsToRun =
   {
-    -- ScanI2c = true,
-
     -- GetVersion = true,
     -- GetVersionAndName = true,
 
@@ -55,12 +53,6 @@ local Represent =
 
 local RunTests =
   function(TestsToRun)
-    if TestsToRun.ScanI2c then
-      print('Scanning for I2C devices.')
-      local I2cDevices = Firmata:GetOpenedI2cPorts()
-      Represent('I2C devices', I2cDevices)
-    end
-
     if TestsToRun.GetVersion then
       local Version = Firmata:GetVersion()
       Represent('Version', Version)

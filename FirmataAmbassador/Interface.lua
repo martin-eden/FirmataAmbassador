@@ -11,9 +11,6 @@ return
     IsConnected = function(self) return self.Connector.IsConnected end,
     GetPortName = function(self) return self.Connector.PortName end,
 
-    -- Discover I2C devices.
-    GetOpenedI2cPorts = request('GetOpenedI2cPorts'),
-
     -- Main functions:
     I2cRead = request('I2cRead'),
     I2cWrite = request('I2cWrite'),
