@@ -20,10 +20,6 @@ return
     return
       {
         Command = SetPinValueCmd,
-        Data =
-          {
-            Request.Pin,
-            Request.Value,
-          },
+        Data = { Request.Pin, Request.Value },
       }
   end
