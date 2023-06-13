@@ -1,6 +1,20 @@
+--[[
+  Get pin mode name.
+
+  Input
+
+    PinMode - Byte - pin mode number
+
+  Output
+
+    String
+    OR
+    NIL - in case of unknown mode
+]]
+
 local PinModeNames = request('PinModeNames')
 
-local GetPinModeName =
+return
   function(PinMode)
     assert_integer(PinMode)
 
@@ -13,5 +27,3 @@ local GetPinModeName =
 
     return Result
   end
-
-return GetPinModeName
