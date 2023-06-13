@@ -50,8 +50,6 @@ return
         return
       end
 
-      PinModes.PinIndex = PinRecIdx - 1
-
       table.insert(Result, PinModes)
     end
 
