@@ -20,10 +20,6 @@ return
     return
       {
         Command = SetPinModeCmd,
-        Data =
-          {
-            Request.Pin,
-            Request.Mode,
-          },
+        Data = { Request.Pin, Request.Mode },
       }
   end
