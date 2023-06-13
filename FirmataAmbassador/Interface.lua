@@ -4,6 +4,7 @@
 
 -- For sure definition of global function will be removed from here.
 -- Error output function. Feel free to redefine.
+-- [!]
 _G.Complain = function(Msg) print(Msg) end
 
 local Internals = request('Internals.Interface')

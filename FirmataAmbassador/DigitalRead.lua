@@ -53,7 +53,10 @@ return
     end
 
     if (Response.Port ~= Port) then
-      Complain('DigitalRead(): WTF?! Got port report for another port!')
+      Complain(
+        ('DigitalRead(): WTF?! Got port report for another port (%d)!'):
+        format(Response.Port)
+      )
       return
     end
 
