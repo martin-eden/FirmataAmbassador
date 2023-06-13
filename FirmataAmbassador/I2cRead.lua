@@ -41,11 +41,8 @@ return
       self:I2cInit()
     end
 
-    self:CompileAndSend('I2cRead', Request)
+    local Result = self:CompileSendAndReceive('I2cRead', Request)
 
-    local Result
-
-    Result = self:Receive()
     if not is_nil(Result) then
       if IsStringResponse(Result) then
         -- It's I2C read error.

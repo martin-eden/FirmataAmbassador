@@ -4,8 +4,9 @@
   Input
 
     Request
-    ~~~~~~~
+    {
       Pin - Byte
+    }
 
   Output
 
@@ -21,7 +22,7 @@
          ~~~~~~~ ~~~~~~~
          FALSE   TRUE
              ~~~~~~~
-             ANY
+               ANY
 ]]
 
 local assert_byte = request('!.number.assert_byte')
@@ -39,9 +40,8 @@ return
     local Port = Request.Pin // 8
 
     self:CompileAndSend('EnableDigitalPortReporting', { Port = Port })
-    self:CompileAndSend('DisableDigitalPortReporting', { Port = Port })
+    local Response = self:CompileSendAndReceive('DisableDigitalPortReporting', { Port = Port })
 
-    local Response = self:Receive()
     if not is_table(Response) then
       Complain("DigitalRead(): Didn't get response to digital read request.")
       return

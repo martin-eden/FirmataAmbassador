@@ -12,23 +12,32 @@
     Nil: in case of errors
 
 
-  Side comments below
+  Note - getting analog value
 
-  Actually we don't know the exact analog value. We know _range_ of
-  value, but not it's exact value.
+    Getting analog value is weird in Firmata.
 
-  analogRead() returns integer between 0 and 1023. It means we have 1024
-  buckets numbered 0 to 1023. First bucket contains values (>= 0.0)
-  and (< (1 / 1024)).
+    We enabling analog reporting for given pin, disabling it next moment
+    and catching analog value report for that pin.
 
-  I want to do normal math with analog value and not going to bother my
-  code with scaling.
+    Similar stuff for reading digital pin value.
 
-  So, for each bucket, returned float value is the _middle_ of range of
-  bucket.
+  Note - analog value meaning
 
-  This way I will never get exact 0.0 and exact 1.0. But I hope I don't
-  need to.
+    Actually we don't know the exact analog value. We know _range_ of
+    value, but not it's exact value.
+
+    analogRead() returns integer between 0 and 1023. It means we have 1024
+    buckets numbered 0 to 1023. First bucket contains values (>= 0.0)
+    and (< (1 / 1024)).
+
+    I want to do normal math with analog value and not going to bother my
+    code with scaling.
+
+    So, for each bucket, returned float value is the _middle_ of range of
+    bucket.
+
+    This way I will never get exact 0.0 and exact 1.0. But I hope I don't
+    need to.
 ]]
 
 local assert_byte = request('!.number.assert_byte')
@@ -38,11 +47,11 @@ return
     assert_table(Request)
     assert_byte(Request.Pin)
 
-    self:CompileAndSend('SetPinMode', { Pin = Request.Pin, Mode = 2 })
+    local PinModeAnalogInput = 2
+    self:CompileAndSend('SetPinMode', { Pin = Request.Pin, Mode = PinModeAnalogInput })
     self:CompileAndSend('EnableAnalogPinReporting', Request)
-    self:CompileAndSend('DisableAnalogPinReporting', Request)
+    local Response = self:CompileSendAndReceive('DisableAnalogPinReporting', Request)
 
-    local Response = self:Receive()
     if not is_table(Response) then
       Complain("AnalogRead(): Didn't get response to analog read request.")
       return
@@ -54,7 +63,10 @@ return
     end
 
     if (Response.Pin ~= Request.Pin) then
-      Complain('AnalogRead(): WTF?! Got analog value for another pin!')
+      Complain(
+        ('AnalogRead(): WTF?! Got analog value for another pin (%d)!'):
+        format(Response.Pin)
+      )
       return
     end
 

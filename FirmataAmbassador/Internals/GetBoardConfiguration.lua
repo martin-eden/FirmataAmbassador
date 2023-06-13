@@ -27,30 +27,38 @@ local DescribePins = request('GetBoardConfiguration.DescribePins')
 
 return
   function(self)
-    self:CompileAndSend('GetPinsModes')
-    local Response = self:Receive()
-
-    if not is_table(Response) then
-      Complain("GetBoardConfiguration: didn't get response.")
-      return
-    end
-
     local Result =
       {
-        Type = 'Board configuration',
+        Type = 'Pins roles and their states.',
         Pins = {},
       }
 
-    -- Get number of pins and capabilities for each pin.
-    local PinsRolesAvailable = DescribePins(Response.Data)
+    -- Get number of pins and roles of each pin.
+    local PinsRolesAvailable
+    do
+      local Response = self:CompileSendAndReceive('GetPinsModes')
+
+      if not is_table(Response) then
+        Complain("GetBoardConfiguration: didn't get response.")
+        return
+      end
+
+      PinsRolesAvailable = DescribePins(Response.Data)
+    end
 
     -- Get current mode for each pin.
-    -- Modify <Result.Pins>.
-    for i = 1, #PinsRolesAvailable do
-      local PinIndex = i - 1
+    for PinNumber = 1, #PinsRolesAvailable do
+      local PinIndex = PinNumber - 1
 
-      self:CompileAndSend('GetPinState', { Pin = PinIndex })
-      local Response = self:Receive()
+      local Response = self:CompileSendAndReceive('GetPinState', { Pin = PinIndex })
+
+      if not is_table(Response) then
+        Complain(
+          ("GetBoardConfiguration: didn't get state response for pin [%d]."):
+          format(PinNumber)
+        )
+        return
+      end
 
       assert_table(Response)
       assert_string(Response.ModeName)
@@ -63,9 +71,10 @@ return
           PinIndex = PinIndex,
           CurrentModeName = Response.ModeName,
           CurrentState = Response.State,
-          SupportedRoles = PinsRolesAvailable[i],
+          SupportedRoles = PinsRolesAvailable[PinNumber],
         }
 
+      -- Modify <Result.Pins>.
       table.insert(Result.Pins, PinDescription)
     end
 
