@@ -10,6 +10,10 @@ return
     Transmitter = request('Transmitter.Interface'),
     Parser = request('Parser.Interface'),
 
+    -- Awareness and exploration:
+    AvailablePinsRoles = nil,
+    AvailablePinsModes = nil,
+
     SetPinMode = request('SetPinMode'),
     SetPinValue = request('SetPinValue'),
     Send = request('Send'),
