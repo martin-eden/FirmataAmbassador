@@ -10,24 +10,28 @@
     {
       Pins
       {
-        PinIndex - Byte - zero-based index
-        SupportedRoles -
-        {
-          ?[<String>] = Bool
-          ...
-        }
+        Index - Byte - zero-based index for pin operations
         SupportedModes -
         {
-          ?[<String>] = True
+          ...
+          List of available modes for current pin. Indexed by mode name.
+
+          Excerpt:
+
+            ['Digital input-pullup'] = True
+            ['Digital input'] = True
+
         }
-        CurrentModeName - String
-        CurrentState - Byte
+        CurrentMode - String - Current pin mode name.
+        Value - Byte - Usually contains last value written to pin.
+          But the exact meaning depends of pin mode.
       },
       ...
     }
 ]]
 
-local DescribePins = request('GetBoardConfiguration.DescribePins')
+local GetPinsModes = request('GetBoardConfiguration.GetPinsModes')
+local GetPinModeName = request('GetBoardConfiguration.GetPinModeName')
 
 return
   function(self)
@@ -37,7 +41,7 @@ return
         Pins = {},
       }
 
-    -- Get number of pins and roles of each pin.
+    -- Get a number of pins and roles of each pin.
     local AvailablePinsModes
     do
       local Response = self:CompileSendAndReceive('GetPinsModes')
@@ -47,7 +51,7 @@ return
         return
       end
 
-      AvailablePinsModes = DescribePins(Response.Data)
+      AvailablePinsModes = GetPinsModes(Response.Data)
     end
 
     -- Get current mode for each pin.
@@ -65,17 +69,18 @@ return
       end
 
       assert_table(Response)
-      assert_string(Response.ModeName)
-      assert_integer(Response.State)
+      assert_integer(Response.PinIndex)
+      assert_integer(Response.ModeIndex)
+      assert_integer(Response.PinValue)
 
       assert(Response.PinIndex == PinIndex)
 
       local PinDescription =
         {
-          PinIndex = PinIndex,
-          CurrentModeName = Response.ModeName,
-          CurrentState = Response.State,
-          SupportedRoles = AvailablePinsModes[PinNumber],
+          Index = PinIndex,
+          CurrentMode = GetPinModeName(Response.ModeIndex),
+          Value = Response.PinValue,
+          SupportedModes = AvailablePinsModes[PinNumber],
         }
 
       -- Modify <Result.Pins>.
@@ -84,7 +89,6 @@ return
 
     -- [!] Setting object field.
     self.AvailablePinsModes = AvailablePinsModes
-
 
     return Result
   end
