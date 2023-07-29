@@ -15,8 +15,8 @@
   Output
     {
       PinIndex - Byte
-      ModeName - String
-      State - Byte
+      ModeIndex - Byte
+      PinValue - Byte
     }
 
   Note
@@ -30,14 +30,12 @@
     necessity.
 ]]
 
-local GetPinModeName = request('^.^.GetBoardConfiguration.GetPinModeName')
-
 return
   function(Command, Data)
     return
       {
         PinIndex = Data[1],
-        ModeName = GetPinModeName(Data[2]),
-        State = Data[3],
+        ModeIndex = Data[2],
+        PinValue = Data[3],
       }
   end
