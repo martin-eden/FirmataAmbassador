@@ -107,9 +107,11 @@ local RunTests =
       print(('Using pin %d for PWM output.'):format(Pin))
 
       local N = 16
-      for i = 1, N do
-        local Value = (i / N) - 1 / 512
-        print(('[%d / %d]: %.2f'):format(i, N, Value))
+      for AngleDeg = 0, 360, 10 do
+        -- Map angle to [0.0, 1.0]:
+        local Value = 0.5 + math.sin(math.rad(AngleDeg)) / 2
+
+        print(('[%d deg]: %.2f'):format(AngleDeg, Value))
         Firmata:AnalogWrite({Pin = Pin, Value = Value})
         SleepSec(.1)
       end

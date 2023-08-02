@@ -5,7 +5,7 @@
 
     {
       Pin - Byte
-      Value - Float - between [0.0, 1.0)
+      Value - Float - clamped to range [0.0, 1.0]
     }
 
   Output
@@ -26,13 +26,17 @@ return
     assert_table(Request)
     assert_byte(Request.Pin)
     assert_float(Request.Value)
-    assert(
-      (Request.Value >= 0.0) and (Request.Value < 1.0),
-      'Value should be between [0.0, 1.0).'
-      )
 
-    -- Map [0.0, 1.0) to [0, 255].
-    local PinValue = (Request.Value * 256) // 1 | 0
+    local PinValue = Request.Value
+
+    -- Clamp to [0.0, 1.0):
+    PinValue = math.max(PinValue, 0.0)
+    PinValue = math.min(PinValue, 1.0 - 1 / 512)
+
+    -- Map [0.0, 1.0) to [0, 255]:
+    PinValue = (PinValue * 256) // 1 | 0
+
+    assert((PinValue >= 0) and (PinValue <= 255), PinValue)
 
     local PinModeOutput = 3
 
