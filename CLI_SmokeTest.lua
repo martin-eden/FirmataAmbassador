@@ -11,8 +11,8 @@
 
 --[[
   Status: works
-  Version: 5
-  Last mod.: 2023-06-13
+  Version: 6
+  Last mod.: 2023-09-09
 ]]
 
 -- Configuration:
@@ -102,9 +102,9 @@ local RunTests =
     if TestsToRun.AnalogWrite then
       print('Analog (PWM) writes.')
 
-      local Pin = 3
+      local PwmPin = 3
 
-      print(('Using pin %d for PWM output.'):format(Pin))
+      print(('Using pin %d for PWM output.'):format(PwmPin))
 
       local N = 16
       for AngleDeg = 0, 360, 10 do
@@ -112,16 +112,20 @@ local RunTests =
         local Value = 0.5 + math.sin(math.rad(AngleDeg)) / 2
 
         print(('[%d deg]: %.2f'):format(AngleDeg, Value))
-        Firmata:AnalogWrite({Pin = Pin, Value = Value})
+        Firmata:AnalogWrite({Pin = PwmPin, Value = Value})
         SleepSec(.1)
       end
       SleepSec(1.5)
-      Firmata:AnalogWrite({Pin = Pin, Value = 0.0})
+      Firmata:AnalogWrite({Pin = PwmPin, Value = 0.0})
     end
 end
 
 print(('Connecting to port "%s".'):format(PortName))
-Firmata:ConnectTo(PortName)
+
+if (not Firmata:ConnectTo(PortName)) then
+  print(("Can't connect to Firmata on port %s."):format(PortName))
+  return
+end
 
 RunTests(TestsToRun)
 
